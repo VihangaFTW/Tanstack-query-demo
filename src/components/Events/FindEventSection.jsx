@@ -16,8 +16,9 @@ export default function FindEventSection() {
   }
 
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ["events"],
-    queryFn: () => fetchEvents(searchElement.current.value),
+    queryKey: ["events", {searchTerm}],
+    queryFn: () => fetchEvents(searchTerm),
+    staleTime: 10000
   });
 
   let content = <p>Please enter a search term and to find events.</p>;
@@ -60,6 +61,7 @@ export default function FindEventSection() {
           <button>Search</button>
         </form>
       </header>
+      {content}
     </section>
   );
 }
