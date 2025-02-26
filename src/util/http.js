@@ -21,13 +21,13 @@ export async function fetchEvents(searchTerm = null) {
   return events;
 }
 
-export async function createNewEvent({event: eventData}) {
+export async function createNewEvent({ event: eventData }) {
   const response = await fetch("http://localhost:3000/events", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(eventData),
+    body: JSON.stringify({event:eventData}),
   });
 
   if (!response.ok) {
@@ -69,15 +69,9 @@ export async function fetchEvent(id) {
 }
 
 export async function deleteEvent(id) {
-  const response = await fetch(
-    "http://localhost:3000/events/" + id,
-    {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': "application/json"
-      }
-    }
-  );
+  const response = await fetch("http://localhost:3000/events/" + id, {
+    method: "DELETE",
+  });
 
   if (!response.ok) {
     const error = new Error("Failed to delete event!");
