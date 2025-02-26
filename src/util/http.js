@@ -21,17 +21,14 @@ export async function fetchEvents(searchTerm = null) {
   return events;
 }
 
-export async function createNewEvent(eventData) {
-
-  const response = await fetch('http://localhost:3000/events', 
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(eventData)
-    }
-  )
+export async function createNewEvent({event: eventData}) {
+  const response = await fetch("http://localhost:3000/events", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(eventData),
+  });
 
   if (!response.ok) {
     const error = new Error("An error occured while creating the event");
@@ -44,17 +41,51 @@ export async function createNewEvent(eventData) {
   return event;
 }
 
+export async function fetchImages() {
+  const response = await fetch("http://localhost:3000/events/images");
 
-export async function fetchImages(){
-  const response = await fetch('http://localhost:3000/events/images');
-
-  if (!response.ok){
-    const error = new Error('Failed to fetch images');
+  if (!response.ok) {
+    const error = new Error("Failed to fetch images");
     error.code = response.status;
     error.info = await response.json();
     throw error;
   }
 
-  const {images} = await response.json();
+  const { images } = await response.json();
   return images;
+}
+
+export async function fetchEvent(id) {
+  const response = await fetch("http://localhost:3000/events/" + id);
+
+  if (!response.ok) {
+    const error = new Error("Failed to fetch event details!");
+    error.code = response.status;
+    error.info = await response.json();
+    throw error;
+  }
+  const { event } = await response.json();
+  return event;
+}
+
+export async function deleteEvent(id) {
+  const response = await fetch(
+    "http://localhost:3000/events/" + id,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': "application/json"
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = new Error("Failed to delete event!");
+    error.code = response.status;
+    error.info = await response.json();
+    throw error;
+  }
+  // event deleted message
+  const { message } = await response.json();
+  return message;
 }
