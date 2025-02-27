@@ -20,11 +20,28 @@ export default function EditEvent() {
   const { mutate } = useMutation({
     mutationFn: updateEvent,
     mutationKey: ["events", { id, type: "update" }],
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["events"],
-      });
+    onMutate: async (mutateInputs) => {
+      // cancel outgoing refetches for queries with the same key
+      await queryClient.cancelQueries(["events", { id }]);
+
+      // get current cached event data
+      const previousEvent = queryClient.getQueryData(["events", { id }]);
+
+      // mutateInputs is the same input passed into the mutate() function call
+      const newData = mutateInputs.event;
+      queryClient.setQueryData(["events", { id }], newData);
+
+      return { previousEvent };
     },
+
+    onError: (error, data, context) => {
+      queryClient.setQueryData(["events", { id }], context.previousEvent);
+    },
+
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["events", { id }],
+      }),
   });
 
   function handleSubmit(formData) {
