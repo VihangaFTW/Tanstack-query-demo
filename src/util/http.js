@@ -27,11 +27,11 @@ export async function createNewEvent({ event: eventData }) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({event:eventData}),
+    body: JSON.stringify({ event: eventData }),
   });
 
   if (!response.ok) {
-    const error = new Error("An error occured while creating the event");
+    const error = new Error("An error occurred while creating the event");
     error.code = response.status;
     error.info = await response.json();
     throw error;
@@ -82,4 +82,23 @@ export async function deleteEvent(id) {
   // event deleted message
   const { message } = await response.json();
   return message;
+}
+
+export async function updateEvent({ id, event }) {
+  const response = await fetch("http://localhost:3000/events/" + id, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify( {event} ),
+  });
+
+  if (!response.ok) {
+    const error = new Error("An error occurred while updating the event.");
+    error.code = error.status;
+    error.info = await response.json();
+    throw error;
+  }
+
+  return response.json();
 }
