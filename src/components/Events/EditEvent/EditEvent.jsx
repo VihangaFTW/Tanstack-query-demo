@@ -15,6 +15,7 @@ export default function EditEvent() {
   const { data, isError, error } = useQuery({
     queryKey: ["events", { id }],
     queryFn: () => fetchEvent(id),
+    staleTime: 5000,
   });
 
   const { mutate } = useMutation({
